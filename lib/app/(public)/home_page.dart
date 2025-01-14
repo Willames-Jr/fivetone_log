@@ -67,7 +67,31 @@ class HomePage extends ConsumerWidget {
             ],
             const SizedBox(height: 16.0),
             for (var exercise in preferences.rmData.keys) ...[
-              ListTile(
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child:  ListTile(
+                      title: Text(getTranslatedExerciseName(exercise, localizations)),
+                      subtitle: Text(
+                        '1RM: ${'${preferences.rmData[exercise]} ${preferences.selectedUnit}' ?? ''}\n' 
+                        '${localizations.cycle}: ${preferences.cycleWeekData[exercise]?['cycle'] ?? 1} ${localizations.week}: ${preferences.cycleWeekData[exercise]?['week'] ?? 1}',
+                      ),
+                      leading: const Icon(Icons.fitness_center),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.play_arrow),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => WorkoutPage(exercise: exercise),
+                            ),
+                          );
+                        },
+                    ),
+                  ),
+                ),
+              ),
+              /* ListTile(
                 title: Text(getTranslatedExerciseName(exercise, localizations)),
                 subtitle: Text(
                   '1RM: ${'${preferences.rmData[exercise]} ${preferences.selectedUnit}' ?? ''}\n' 
@@ -86,8 +110,7 @@ class HomePage extends ConsumerWidget {
                   },
                 ),
                 
-              ),
-              const Divider(), // Add a divider between the tiles
+              ), */ // Add a divider between the tiles
             ],
           ],
         ),
