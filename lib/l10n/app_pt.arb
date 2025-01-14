@@ -1,0 +1,21 @@
+{
+    "homePageTitle": "Página Inicial",
+    "selectExercise": "Selecione um exercício para começar o treino.",
+    "lastWorkout": "Último treino",
+    "cycle": "Ciclo",
+    "week": "Semana",
+    "volume": "Volume",
+    "oneRM": "1RM",
+    "timeSpent": "Tempo Gasto",
+    "notes": "Notas",
+    "save": "Salvar",
+    "editWorkout": "Editar Treino",
+    "exportData": "Exportar Dados",
+    "importData": "Importar Dados",
+    "workoutCharts": "Gráficos de Treino",
+    "selectExerciseDropdown": "Selecione o Exercício",
+    "oneRMProgression": "Progresso do 1RM",
+    "volumeProgression": "Progresso do Volume",
+    "savedWorkouts": "Treinos Salvos",
+    "noSavedWorkouts": "Nenhum treino salvo"
+}
