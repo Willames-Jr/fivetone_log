@@ -4,7 +4,7 @@ Map<String, String> exerciseNamesEnToPt = {
   'Deadlift': 'Levantamento terra',
   'Squat': 'Agachamento',
   'Bench Press': 'Supino',
-  'Military Press': 'Militar press',
+  'Military Press': 'Press militar',
   // Add other exercises here
 };
 
@@ -12,11 +12,12 @@ Map<String, String> exerciseNamesPtToEn = {
   'Levantamento terra': 'Deadlift',
   'Agachamento': 'Squat',
   'Supino': 'Bench Press',
-  'Militar press': 'Military Press',
+  'Press militar': 'Military Press',
   // Add other exercises here
 };
 
 String getTranslatedExerciseName(String exercise, AppLocalizations localizations) {
+  print(exercise);
   if (localizations.localeName == 'pt_BR') {
     return exerciseNamesEnToPt[exercise] ?? exercise;
   } else {
