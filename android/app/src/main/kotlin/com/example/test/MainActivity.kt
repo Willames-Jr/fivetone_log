@@ -1,4 +1,4 @@
-package com.example.test
+package com.willamesjr.fivetlog
 
 import io.flutter.embedding.android.FlutterActivity
 

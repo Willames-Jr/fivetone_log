@@ -1,0 +1,44 @@
+Categories:
+  - Sports & Health
+License: GPL-3.0-or-later
+SourceCode: https://github.com/Willames-Jr/fivetone_log
+IssueTracker: https://github.com/Willames-Jr/fivetone_log/issues
+Changelog: https://github.com/Willames-Jr/fivetone_log/releases
+
+AuthorName: WillJr
+Description: >
+  The 5/3/1 Log app helps you track your workouts and progress using the popular 5/3/1 strength training method. Whether you're a beginner or an experienced lifter, this app provides all the tools you need to stay on track and achieve your fitness goals.
+
+  Features:
+  - Workout logging
+  - Rest timer
+  - Automatic calculation of reps and weights
+
+  Stay motivated and reach your strength training goals with the 5/3/1 Log app. Download now and start your journey to a stronger you!
+RepoType: git
+Repo: https://github.com/Willames-Jr/fivetone_log
+
+Builds:
+  - versionName: 0.0.3
+    versionCode: 3
+    commit: v0.0.3
+    output: build/app/outputs/flutter-apk/app-release.apk
+    srclibs:
+      - flutter@3.2.3
+    rm:
+      - ios
+      - linux
+      - macos
+      - web
+      - .vs
+    build:
+      - $$flutter$$/bin/flutter config --no-analytics
+      - $$flutter$$/bin/flutter packages pub get
+      - $$flutter$$/bin/flutter build apk
+
+AutoUpdateMode: Version v%v
+UpdateCheckMode: Tags
+UpdateCheckData: pubspec.yaml|version:\s.+\+(\d+)|.|version:\s(.+)\+
+CurrentVersion: 0.0.3
+CurrentVersionCode: 3
+

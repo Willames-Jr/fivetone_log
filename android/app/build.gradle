@@ -23,8 +23,8 @@ if (flutterVersionName == null) {
 }
 
 android {
-    namespace "com.willamesjr.fivetlog"
-    compileSdkVersion flutter.compileSdkVersion
+    namespace = "com.willamesjr.fivetlog"
+    compileSdkVersion 34
     ndkVersion flutter.ndkVersion
 
     compileOptions {

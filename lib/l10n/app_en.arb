@@ -17,5 +17,10 @@
     "oneRMProgression": "1RM Progression",
     "volumeProgression": "Volume Progression",
     "savedWorkouts": "Saved Workouts",
-    "noSavedWorkouts": "No saved workouts"
+    "noSavedWorkouts": "No saved workouts",
+    "unitOfMeasure": "Unit of measure",
+    "enter1RM": "Enter 1RM",
+    "adjustPercentages": "Adjust percentages",
+    "checkInputData": "Check input data",
+    "generateWorkout": "Generate workout"
 }

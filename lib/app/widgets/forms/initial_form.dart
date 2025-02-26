@@ -6,6 +6,7 @@ import 'package:fivethreeone_log/app/interactor/models/preferences_model.dart';
 import 'package:fivethreeone_log/app/interactor/providers/preferences_provider.dart';
 import 'package:fivethreeone_log/app/widgets/default_option_button.dart';
 import 'package:fivethreeone_log/app/utils/utils.dart'; // Import the utility functions
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import localization
 
 class InitialForm extends ConsumerStatefulWidget {
   const InitialForm({super.key});
@@ -49,6 +50,8 @@ class InitialFormState extends ConsumerState<InitialForm> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     return Form(
       key: _formKey,
       child: Padding(
@@ -56,7 +59,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
         child: Column(
           children: [
             DefaultOptionButton(
-              labelText: 'Unidade de medida',
+              labelText: localizations.unitOfMeasure, // Localized text
               selectedValue: selectedUnit,
               options: weightUnits,
               onChanged: (value) {
@@ -69,9 +72,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
             const SizedBox(height: 16),
             ExpansionTile(
               maintainState: true,
-              title: const Text(
-                'Informe o seu 1RM',
-              ),
+              title: Text(localizations.enter1RM), // Localized text
               children: [
                 for (var exercise in _rmData.keys)
                   Padding(
@@ -162,9 +163,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
             const SizedBox(height: 16),
             ExpansionTile(
               maintainState: true,
-              title: const Text(
-                'Ajuste os percentuais',
-              ),
+              title: Text(localizations.adjustPercentages), // Localized text
               children: [
                 for (var week in _percData.keys)
                   Padding(
@@ -255,12 +254,11 @@ class InitialFormState extends ConsumerState<InitialForm> {
                       print('redirecionar');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Verifique os dados inseridos')),
+                        SnackBar(content: Text(localizations.checkInputData)), // Localized text
                       );
                     }
                   },
-                  child: const Text('GERAR TREINO'),
+                  child: Text(localizations.generateWorkout), // Localized text
                 ),
               ),
             ),
