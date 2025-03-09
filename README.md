@@ -1,16 +1,17 @@
-# test
+5/3/1 Log
+---------
 
-A new Flutter project.
+The 5/3/1 Log app helps you track your workouts and progress using the popular 5/3/1 strength training method. Whether you're a beginner or an experienced lifter, this app provides all the tools you need to stay on track and achieve your fitness goals.
 
-## Getting Started
+Features:
+- Workout logging
+- Rest timer
+- Automatic calculation of reps and weights
 
-This project is a starting point for a Flutter application.
+Stay motivated and reach your strength training goals with the 5/3/1 Log app.
 
-A few resources to get you started if this is your first Flutter project:
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/com.willamesjr.fivetlog/)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+License: GNU General Public License v3.0 only
