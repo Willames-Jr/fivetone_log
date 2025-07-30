@@ -75,7 +75,7 @@ class SavedWorkoutsPage extends ConsumerWidget {
                           children: [
                           const Icon(Icons.calendar_today),
                           const SizedBox(width: 8.0),
-                          Text('$formattedDate'),
+                          Text(formattedDate),
                           ],
                         ),
                         const SizedBox(width: 8.0),
