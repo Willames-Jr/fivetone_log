@@ -22,5 +22,19 @@
     "enter1RM": "Enter 1RM",
     "adjustPercentages": "Adjust percentages",
     "checkInputData": "Check input data",
-    "generateWorkout": "Generate workout"
+    "generateWorkout": "Generate workout",
+    "bench": "Bench Press",
+    "squat": "Squat",
+    "militaryPress": "Military Press",
+    "deadLift": "Deadlift",
+    "weight": "Weight",
+    "reps": "Repetitions",
+    "week1": "Week 1",
+    "week2": "Week 2",
+    "week3": "Week 3",
+    "week4": "Week 4",
+    "set1": "Set 1",
+    "set2": "Set 2",
+    "set3": "Set 3",
+    "insertValue": "Insert a value"
 }

@@ -48,6 +48,49 @@ class InitialFormState extends ConsumerState<InitialForm> {
     },
   };
 
+  String getWeekName(String week, AppLocalizations localizations) {
+    switch (week) {
+      case 'Semana 1':
+        return localizations.week1;
+      case 'Semana 2':
+        return localizations.week2;
+      case 'Semana 3':
+        return localizations.week3;
+      case 'Semana 4':
+        return localizations.week4;
+      default:
+        return week;
+    }
+  }
+
+  String getRepsName(String reps, AppLocalizations localizations) {
+    switch (reps) {
+      case 'Série 1':
+        return localizations.set1;
+      case 'Série 2':
+        return localizations.set2;
+      case 'Série 3':
+        return localizations.set3;
+      default:
+        return reps;
+    }
+  }
+
+  String getExerciseName(String exercise, AppLocalizations localizations) {
+    switch (exercise) {
+      case 'Agachamento':
+        return localizations.squat;
+      case 'Levantamento terra':
+        return localizations.deadLift;
+      case 'Supino':
+        return localizations.bench;
+      case 'Press militar':
+        return localizations.militaryPress;
+      default:
+        return exercise; 
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
@@ -82,7 +125,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
-                            exercise,
+                            getExerciseName(exercise, localizations),
                           ),
                         ),
                         const SizedBox(height: 10.0),
@@ -98,14 +141,14 @@ class InitialFormState extends ConsumerState<InitialForm> {
                                       keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
                                         labelText:
-                                            'Peso ($selectedUnit)', // Dynamic unit
+                                            '${localizations.weight} ($selectedUnit)', // Dynamic unit
                                         border: const OutlineInputBorder(),
                                       ),
                                       inputFormatters: [
                                         LengthLimitingTextInputFormatter(5),
                                       ],
                                       validator: (value) => value!.isEmpty
-                                          ? 'Insira um valor'
+                                          ? localizations.insertValue
                                           : null,
                                       onChanged: (value) {
                                         setState(() {
@@ -128,11 +171,11 @@ class InitialFormState extends ConsumerState<InitialForm> {
                                         LengthLimitingTextInputFormatter(2),
                                       ],
                                       validator: (value) => value!.isEmpty
-                                          ? 'Insira um valor'
+                                          ? localizations.insertValue
                                           : null,
-                                      decoration: const InputDecoration(
-                                        labelText: 'Repetições',
-                                        border: OutlineInputBorder(),
+                                      decoration: InputDecoration(
+                                        labelText: localizations.reps,
+                                        border: const OutlineInputBorder(),
                                       ),
                                       onChanged: (value) {
                                         setState(() {
@@ -174,7 +217,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              week,
+                              getWeekName(week, localizations),
                             ),
                           ),
                           const SizedBox(height: 10.0),
@@ -193,7 +236,7 @@ class InitialFormState extends ConsumerState<InitialForm> {
                                                 .toString(),
                                         decoration: InputDecoration(
                                           labelText:
-                                              exerciceSet, // Dynamic unit
+                                              getRepsName(exerciceSet, localizations), // Dynamic unit
                                           border: const OutlineInputBorder(),
                                           suffix: const Text(
                                             '%',
@@ -233,12 +276,8 @@ class InitialFormState extends ConsumerState<InitialForm> {
                     ),
                   ),
                   onPressed: () async {
-                    print('começando a salvar');
                     // Validate returns true if the form is valid, or false otherwise.
                     if (_formKey.currentState!.validate()) {
-                      print('salvando');
-                      
-                      print('salvando no provider');
                       // If the form is valid, display a snackbar. In the real world,
                       final Map<String, double> rmData = {
                         for (var exercise in _rmData.keys) 
@@ -248,10 +287,8 @@ class InitialFormState extends ConsumerState<InitialForm> {
                         for (var exercise in _rmData.keys) exercise: {'cycle': 1, 'week': 1}
                       };
                       await ref.read(preferencesProvider.notifier).setPreferences(PreferencesModel(selectedUnit: selectedUnit, rmData: rmData, percData: _percData, cycleWeekData: cycleWeekData));
-                      print('salvo');
                       // Redirect to home page using Routefly
                       Routefly.navigate('/home');
-                      print('redirecionar');
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(content: Text(localizations.checkInputData)), // Localized text
