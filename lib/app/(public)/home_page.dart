@@ -1,3 +1,4 @@
+import 'package:fivethreeone_log/app/(public)/charts_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fivethreeone_log/app/interactor/providers/preferences_provider.dart';
@@ -51,10 +52,21 @@ class HomePage extends ConsumerWidget {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.area_chart),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ChartsPage(),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             Text(localizations.selectExercise),
