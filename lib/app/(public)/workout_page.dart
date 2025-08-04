@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fivethreeone_log/app/utils/exercise_names.dart'; // Import the exercise names mapping
 
+// TODO: Resolver bug: os pesos não estão sendo atualizados corretamente quando o usuário finaliza um ciclo.
+
 class WorkoutPage extends ConsumerStatefulWidget {
   final String exercise;
 
@@ -257,7 +259,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     return _isCompleted.values.every((completed) => completed) && _isCompleted.isNotEmpty;
   }
 
-  void _saveData(
+  Future<void> _saveData(
       int week,
       int cycle,
       double oneRM,
@@ -265,7 +267,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
       List<MapEntry<String, double>> sets,
       Function(WorkoutModel) onSave,
       Function(String, int, int) updateCycleAndWeek,
-      Function(String, double) updateOneRM) {
+      Function(String, double) updateOneRM) async {
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     final List<SetModel> setsData = [];
@@ -308,6 +310,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
 
     int newWeek = week + 1;
     int newCycle = cycle;
+    
     if (newWeek > 4) {
       newWeek = 1;
       newCycle += 1;
@@ -318,11 +321,12 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
               ? 5.0
               : 2.5;
       oneRM += increment;
-      updateOneRM(exercise, oneRM);
+      await updateOneRM(exercise, oneRM);
     }
 
-    updateCycleAndWeek(exercise, newCycle, newWeek);
+    await updateCycleAndWeek(exercise, newCycle, newWeek);
   }
+  
   String getTranslatedExerciseName(String exercise, AppLocalizations localizations) {
     switch (exercise) {
       case 'Agachamento':
@@ -337,6 +341,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
         return exercise; // Fallback to the original name if not found
     }
   }
+  
   @override
   Widget build(BuildContext context) {
     final preferences = ref.watch(preferencesProvider);
@@ -345,8 +350,8 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     final oneRM = preferences.rmData[widget.exercise] ?? 0.0;
     final percData = preferences.percData;
     final cycleWeekData = preferences.cycleWeekData[widget.exercise] ??
-        {'cycle': 1, 'week': 1}; // New field
-
+        {'cycle': 1, 'week': 1}; 
+    
     if (oneRM == 0.0) {
       return Scaffold(
         appBar: AppBar(
@@ -443,7 +448,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                               final isCompleted = _isCompleted[index] ?? false;
                               final reps = _reps[index] ?? repsForWeek[index];
                               final weight = _weights[index] ?? initialWeight;
-
+                              
                               return DataRow(
                                 cells: [
                                   DataCell(

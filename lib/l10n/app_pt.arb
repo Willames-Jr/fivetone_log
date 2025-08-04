@@ -53,5 +53,6 @@
     "selectTimerDuration": "Selecione a duração do intervalo",
     "seconds": "segundos",
     "minutes": "minutos",
-    "noDataAvailable": "Não existe dados para"
+    "noDataAvailable": "Não existe dados para",
+    "noDataAvailableForSelectedExercise": "Não existem dados para o exercício selecionado."
 }
