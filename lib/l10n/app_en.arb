@@ -53,5 +53,6 @@
     "selectTimerDuration": "Select timer duration",
     "seconds": "seconds",
     "minutes": "minutes",
-    "noDataAvailable": "No data available for"
+    "noDataAvailable": "No data available for",
+    "noDataAvailableForSelectedExercise": "No data available for the selected exercise."
 }
