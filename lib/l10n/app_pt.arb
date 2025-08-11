@@ -54,5 +54,12 @@
     "seconds": "segundos",
     "minutes": "minutos",
     "noDataAvailable": "Não existe dados para",
-    "noDataAvailableForSelectedExercise": "Não existem dados para o exercício selecionado."
+    "noDataAvailableForSelectedExercise": "Não existem dados para o exercício selecionado.",
+    "about":"Sobre",
+    "contactMe": "Entre em contato",
+    "appDescription": "Um aplicativo simples para registrar seus treinos 5/3/1, acompanhar seu progresso e gerenciar seus ciclos de treinamento.",
+    "developedBy": "Desenvolvido por",
+    "foundBug": "Encontrou um erro ou problema? Por favor, reporte por e-mail!",
+    "reportBugButton": "Reporte um bug",
+    "featureIdea": "Tem uma ideia para um novo recurso? Me avise!"
 }

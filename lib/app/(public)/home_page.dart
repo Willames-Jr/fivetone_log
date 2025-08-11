@@ -1,4 +1,5 @@
 import 'package:fivethreeone_log/app/(public)/charts_page.dart';
+import 'package:fivethreeone_log/app/(public)/info_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fivethreeone_log/app/interactor/providers/preferences_provider.dart';
@@ -59,6 +60,17 @@ class HomePage extends ConsumerWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => const ChartsPage(),
+                ),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const InfoPage(),
                 ),
               );
             },
