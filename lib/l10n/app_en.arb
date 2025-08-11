@@ -54,5 +54,12 @@
     "seconds": "seconds",
     "minutes": "minutes",
     "noDataAvailable": "No data available for",
-    "noDataAvailableForSelectedExercise": "No data available for the selected exercise."
+    "noDataAvailableForSelectedExercise": "No data available for the selected exercise.",
+    "about":"About",
+    "contactMe": "Contact me",
+    "appDescription": "A simple app to log your 5/3/1 workouts, track your progress, and manage your training cycles.",
+    "developedBy": "Developed by",
+    "foundBug": "Found a bug or issue? Please report it via email!",
+    "reportBugButton": "Report a bug",
+    "featureIdea": "Have an idea for a new feature? Let me know!"
 }
