@@ -13,6 +13,7 @@ class PreferencesNotifier extends StateNotifier<PreferencesModel> {
           rmData: {},
           percData: {},
           cycleWeekData: {}, // New field
+          tmData: {}
         ));
 
   Future<void> loadPreferences() async {
@@ -45,6 +46,15 @@ class PreferencesNotifier extends StateNotifier<PreferencesModel> {
     final updatedRmData = Map<String, double>.from(state.rmData)
       ..[key] = newOneRM;
     final updatedPreferences = state.copyWith(rmData: updatedRmData);
+    await _repository.update(updatedPreferences);
+    state = updatedPreferences;
+  }
+
+  // Update TM Data
+  Future<void> updateTmData(String key, double newTm) async {
+    final updatedTmData = Map<String, double>.from(state.tmData)
+      ..[key] = newTm;
+    final updatedPreferences = state.copyWith(tmData: updatedTmData);
     await _repository.update(updatedPreferences);
     state = updatedPreferences;
   }
@@ -83,6 +93,7 @@ class PreferencesNotifier extends StateNotifier<PreferencesModel> {
       rmData: {},
       percData: {},
       cycleWeekData: {}, // New field
+      tmData: {}
     );
   }
 
