@@ -263,11 +263,12 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
       int week,
       int cycle,
       double oneRM,
+      double actualTM,
       String exercise,
       List<MapEntry<String, double>> sets,
       Function(WorkoutModel) onSave,
       Function(String, int, int) updateCycleAndWeek,
-      Function(String, double) updateOneRM) async {
+      Function(String, double) updateTM) async {
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     final List<SetModel> setsData = [];
@@ -320,8 +321,9 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
           (exercise == 'Levantamento terra' || exercise == 'Agachamento')
               ? 5.0
               : 2.5;
-      oneRM += increment;
-      await updateOneRM(exercise, oneRM);
+      print('$exercise: $increment');
+      final newTM = actualTM + increment;
+      await updateTM(exercise, newTM);
     }
 
     await updateCycleAndWeek(exercise, newCycle, newWeek);
@@ -348,6 +350,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     final workouts = ref.watch(workoutProvider);
     final localizations = AppLocalizations.of(context)!;
     final oneRM = preferences.rmData[widget.exercise] ?? 0.0;
+    final tm = preferences.tmData?[widget.exercise] ?? (oneRM * 0.9); // Use TM if available, else fallback
     final percData = preferences.percData;
     final cycleWeekData = preferences.cycleWeekData[widget.exercise] ??
         {'cycle': 1, 'week': 1}; 
@@ -406,6 +409,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
           children: [
             Text('${localizations.cycle}: ${cycleWeekData['cycle']}'),
             Text('${localizations.week}: $week'),
+            Text('TM2: $tm ${preferences.selectedUnit}'), // Show TM value
             const SizedBox(height: 16),
             Expanded(
               child: ListView(
@@ -443,12 +447,13 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                               final setName =
                                   sets[index].key.replaceAll('Série ', '');
                               final percentage = sets[index].value;
+                              // Use TM for weight calculation
                               final initialWeight =
-                                  (oneRM * (percentage / 100)).ceilToDouble();
+                                  (tm * (percentage / 100)).ceilToDouble();
                               final isCompleted = _isCompleted[index] ?? false;
                               final reps = _reps[index] ?? repsForWeek[index];
                               final weight = _weights[index] ?? initialWeight;
-                              
+                              print('Set: $oneRM');
                               return DataRow(
                                 cells: [
                                   DataCell(
@@ -563,6 +568,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                         week,
                         cycleWeekData['cycle'] ?? 1,
                         oneRM,
+                        tm,
                         widget.exercise,
                         sets,
                         (workout) => ref
@@ -571,9 +577,9 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                         (exercise, cycle, week) => ref
                             .read(preferencesProvider.notifier)
                             .updateCycleAndWeek(exercise, cycle, week),
-                        (exercise, oneRM) => ref
+                        (exercise, tm) => ref
                             .read(preferencesProvider.notifier)
-                            .updateOneRM(exercise, oneRM))
+                            .updateTmData(exercise, tm))
                     : null,
                 child: Text(localizations.save),
               ),

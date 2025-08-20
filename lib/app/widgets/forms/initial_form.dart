@@ -283,10 +283,22 @@ class InitialFormState extends ConsumerState<InitialForm> {
                         for (var exercise in _rmData.keys) 
                           exercise: calculate1RM(_rmData[exercise]!['peso']!, _rmData[exercise]!['repeticoes']!.toInt())
                       };
+                      final Map<String, double> tmData = {
+                        for (var exercise in _rmData.keys)
+                          exercise: calculate1RM(_rmData[exercise]!['peso']!, _rmData[exercise]!['repeticoes']!.toInt()) * 0.9
+                      };
                       final Map<String, Map<String, int>> cycleWeekData = {
                         for (var exercise in _rmData.keys) exercise: {'cycle': 1, 'week': 1}
                       };
-                      await ref.read(preferencesProvider.notifier).setPreferences(PreferencesModel(selectedUnit: selectedUnit, rmData: rmData, percData: _percData, cycleWeekData: cycleWeekData));
+                      await ref.read(preferencesProvider.notifier).setPreferences(
+                        PreferencesModel(
+                          selectedUnit: selectedUnit,
+                          rmData: rmData,
+                          tmData: tmData,
+                          percData: _percData,
+                          cycleWeekData: cycleWeekData
+                        )
+                      );
                       // Redirect to home page using Routefly
                       Routefly.navigate('/home');
                     } else {
