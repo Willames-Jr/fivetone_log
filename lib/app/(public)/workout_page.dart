@@ -10,6 +10,8 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:fivethreeone_log/app/utils/exercise_names.dart'; // Import the exercise names mapping
 
+// TODO: Resolver bug: os pesos não estão sendo atualizados corretamente quando o usuário finaliza um ciclo.
+
 class WorkoutPage extends ConsumerStatefulWidget {
   final String exercise;
 
@@ -30,28 +32,28 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
   Duration _setTimerDuration = Duration.zero;
   Duration _selectedSetTimerDuration = const Duration(minutes: 2); // Default value
 
-  void _showNotesDialog() {
+  void _showNotesDialog(AppLocalizations localizations) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Notes'),
+          title: Text(localizations.notes),
           content: TextField(
             controller: _notesController,
-            decoration: const InputDecoration(
-              hintText: 'Enter your notes here',
+            decoration: InputDecoration(
+              hintText: localizations.enterNotes,
             ),
             maxLines: 5,
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('CANCEL'),
+              child: Text(localizations.cancel.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: Text(localizations.ok.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -62,17 +64,17 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     );
   }
 
-  void _showSetTimerDialog() {
+  void _showSetTimerDialog(AppLocalizations localizations) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Select Timer Duration'),
+          title: Text(localizations.selectTimerDuration),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               RadioListTile<Duration>(
-                title: const Text('30 seconds'),
+                title: Text('30 ${localizations.seconds}'),
                 value: const Duration(seconds: 30),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -83,7 +85,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                 },
               ),
               RadioListTile<Duration>(
-                title: const Text('60 seconds'),
+                title: Text('60 ${localizations.seconds}'),
                 value: const Duration(seconds: 60),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -94,7 +96,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                 },
               ),
               RadioListTile<Duration>(
-                title: const Text('90 seconds'),
+                title: Text('90 ${localizations.seconds}'),
                 value: const Duration(seconds: 90),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -105,7 +107,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                 },
               ),
               RadioListTile<Duration>(
-                title: const Text('2 minutes'),
+                title: Text('2 ${localizations.minutes}'),
                 value: const Duration(minutes: 2),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -116,7 +118,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                 },
               ),
               RadioListTile<Duration>(
-                title: const Text('3 minutes'),
+                title: Text('3 ${localizations.minutes}'),
                 value: const Duration(minutes: 3),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -127,7 +129,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                 },
               ),
               RadioListTile<Duration>(
-                title: const Text('5 minutes'),
+                title: Text('5 ${localizations.minutes}'),
                 value: const Duration(minutes: 5),
                 groupValue: _selectedSetTimerDuration,
                 onChanged: (Duration? value) {
@@ -203,28 +205,28 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     return "$hours:$minutes:$seconds";
   }
 
-  void _showWeightDialog(int index, double currentWeight) {
+  void _showWeightDialog(int index, double currentWeight, AppLocalizations localizations) {
     final TextEditingController controller =
         TextEditingController(text: currentWeight.toString());
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Enter Weight'),
+          title: Text(localizations.enterWeight),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(hintText: "Enter weight"),
+            decoration: InputDecoration(hintText: localizations.enterWeight),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('CANCEL'),
+              child: Text(localizations.cancel.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: Text(localizations.ok.toUpperCase()),
               onPressed: () {
                 setState(() {
                   _weights[index] =
@@ -257,15 +259,16 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
     return _isCompleted.values.every((completed) => completed) && _isCompleted.isNotEmpty;
   }
 
-  void _saveData(
+  Future<void> _saveData(
       int week,
       int cycle,
       double oneRM,
+      double actualTM,
       String exercise,
       List<MapEntry<String, double>> sets,
       Function(WorkoutModel) onSave,
       Function(String, int, int) updateCycleAndWeek,
-      Function(String, double) updateOneRM) {
+      Function(String, double) updateTM) async {
     final DateTime now = DateTime.now();
     final String formattedDate = DateFormat('yyyy-MM-dd – kk:mm').format(now);
     final List<SetModel> setsData = [];
@@ -308,6 +311,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
 
     int newWeek = week + 1;
     int newCycle = cycle;
+    
     if (newWeek > 4) {
       newWeek = 1;
       newCycle += 1;
@@ -317,35 +321,47 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
           (exercise == 'Levantamento terra' || exercise == 'Agachamento')
               ? 5.0
               : 2.5;
-      oneRM += increment;
-      updateOneRM(exercise, oneRM);
+      print('$exercise: $increment');
+      final newTM = actualTM + increment;
+      await updateTM(exercise, newTM);
     }
 
-    updateCycleAndWeek(exercise, newCycle, newWeek);
-
-    print('Data saved on $formattedDate: $setsData');
-    print('Total time: ${_formatDuration(totalTime)}'); // Print total time
-    print('Calculated 1RM: $calculated1RM'); // Print calculated 1RM
-    print('Total volume: $totalVolume'); // Print total volume
+    await updateCycleAndWeek(exercise, newCycle, newWeek);
   }
-
+  
+  String getTranslatedExerciseName(String exercise, AppLocalizations localizations) {
+    switch (exercise) {
+      case 'Agachamento':
+        return localizations.squat;
+      case 'Supino':
+        return localizations.bench;
+      case 'Levantamento terra':
+        return localizations.deadLift;
+      case 'Desenvolvimento militar':
+        return localizations.militaryPress;
+      default:
+        return exercise; // Fallback to the original name if not found
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     final preferences = ref.watch(preferencesProvider);
     final workouts = ref.watch(workoutProvider);
     final localizations = AppLocalizations.of(context)!;
     final oneRM = preferences.rmData[widget.exercise] ?? 0.0;
+    final tm = preferences.tmData?[widget.exercise] ?? (oneRM * 0.9); // Use TM if available, else fallback
     final percData = preferences.percData;
     final cycleWeekData = preferences.cycleWeekData[widget.exercise] ??
-        {'cycle': 1, 'week': 1}; // New field
-
+        {'cycle': 1, 'week': 1}; 
+    
     if (oneRM == 0.0) {
       return Scaffold(
         appBar: AppBar(
           title: Text(getTranslatedExerciseName(widget.exercise, localizations)),
         ),
         body: Center(
-          child: Text('No data available for ${getTranslatedExerciseName(widget.exercise, localizations)}'),
+          child: Text('${localizations.noDataAvailable} ${getTranslatedExerciseName(widget.exercise, localizations)}'),
         ),
       );
     }
@@ -378,11 +394,11 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.timer),
-            onPressed: _showSetTimerDialog,
+            onPressed: () =>  _showSetTimerDialog(localizations),
           ),
           IconButton(
             icon: const Icon(Icons.comment),
-            onPressed: _showNotesDialog,
+            onPressed: () => _showNotesDialog(localizations),
           ),
         ],
       ),
@@ -393,12 +409,13 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
           children: [
             Text('${localizations.cycle}: ${cycleWeekData['cycle']}'),
             Text('${localizations.week}: $week'),
+            Text('TM2: $tm ${preferences.selectedUnit}'), // Show TM value
             const SizedBox(height: 16),
             Expanded(
               child: ListView(
                 children: [
                   ExpansionTile(
-                    title: const Text('Main Lift'),
+                    title: Text(localizations.mainLift),
                     children: [
                       SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
@@ -407,15 +424,15 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                           columns: [
                             DataColumn(
                               numeric: false,
-                              tooltip: 'Set',
+                              tooltip: localizations.set,
                               onSort: (columnIndex, ascending) {},
-                              label: const Center(child: Text('Set')),
+                              label: Center(child: Text(localizations.set)),
                             ),
                             DataColumn(
                               numeric: false,
-                              tooltip: 'Reps',
+                              tooltip: localizations.reps,
                               onSort: (columnIndex, ascending) {},
-                              label: const Center(child: Text('Reps')),
+                              label: Center(child: Text(localizations.reps)),
                             ),
                             DataColumn(
                               numeric: false,
@@ -430,12 +447,13 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                               final setName =
                                   sets[index].key.replaceAll('Série ', '');
                               final percentage = sets[index].value;
+                              // Use TM for weight calculation
                               final initialWeight =
-                                  (oneRM * (percentage / 100)).ceilToDouble();
+                                  (tm * (percentage / 100)).ceilToDouble();
                               final isCompleted = _isCompleted[index] ?? false;
                               final reps = _reps[index] ?? repsForWeek[index];
                               final weight = _weights[index] ?? initialWeight;
-
+                              print('Set: $oneRM');
                               return DataRow(
                                 cells: [
                                   DataCell(
@@ -494,7 +512,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                                       children: [
                                         GestureDetector(
                                           onLongPress: () {
-                                            _showWeightDialog(index, weight);
+                                            _showWeightDialog(index, weight, localizations);
                                           },
                                           child: IconButton(
                                             iconSize: 16.0,
@@ -510,13 +528,13 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                                         ),
                                         GestureDetector(
                                           onLongPress: () {
-                                            _showWeightDialog(index, weight);
+                                            _showWeightDialog(index, weight, localizations);
                                           },
                                           child: Text('$weight'),
                                         ),
                                         GestureDetector(
                                           onLongPress: () {
-                                            _showWeightDialog(index, weight);
+                                            _showWeightDialog(index, weight, localizations);
                                           },
                                           child: IconButton(
                                             iconSize: 16.0,
@@ -550,6 +568,7 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                         week,
                         cycleWeekData['cycle'] ?? 1,
                         oneRM,
+                        tm,
                         widget.exercise,
                         sets,
                         (workout) => ref
@@ -558,11 +577,11 @@ class _WorkoutPageState extends ConsumerState<WorkoutPage> {
                         (exercise, cycle, week) => ref
                             .read(preferencesProvider.notifier)
                             .updateCycleAndWeek(exercise, cycle, week),
-                        (exercise, oneRM) => ref
+                        (exercise, tm) => ref
                             .read(preferencesProvider.notifier)
-                            .updateOneRM(exercise, oneRM))
+                            .updateTmData(exercise, tm))
                     : null,
-                child: const Text('Save'),
+                child: Text(localizations.save),
               ),
             ),
           ],

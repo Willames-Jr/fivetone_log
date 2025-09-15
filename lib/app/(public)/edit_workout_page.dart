@@ -5,6 +5,7 @@ import 'package:fivethreeone_log/app/interactor/models/set_model.dart';
 import 'package:fivethreeone_log/app/interactor/providers/preferences_provider.dart';
 import 'package:fivethreeone_log/app/interactor/providers/workout_provider.dart';
 import 'package:fivethreeone_log/app/utils/utils.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import localization
 
 class EditWorkoutPage extends ConsumerStatefulWidget {
   final WorkoutModel workout;
@@ -18,34 +19,35 @@ class EditWorkoutPage extends ConsumerStatefulWidget {
 class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
   final _formKey = GlobalKey<FormState>();
   late WorkoutModel _editableWorkout;
-  final Map<int, double> _weights = {};
+  //final Map<int, double> _weights = {};
   late TextEditingController _notesController;
   late List<TextEditingController> _repsControllers;
   late List<TextEditingController> _weightsControllers;
-  final Map<int, int> _reps = {};
+  //final Map<int, int> _reps = {};
 
-  void _showWeightDialog(int index, double currentWeight) {
+  void _showWeightDialog(int index, double currentWeight, AppLocalizations localizations) {
     final TextEditingController controller =
         TextEditingController(text: currentWeight.toString());
+    
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('Enter Weight'),
+          title: Text(localizations.enterWeight),
           content: TextField(
             controller: controller,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(hintText: "Enter weight"),
+            decoration: InputDecoration(hintText: localizations.enterWeight),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('CANCEL'),
+              child: Text(localizations.cancel.toUpperCase()),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: const Text('OK'),
+              child: Text(localizations.ok.toUpperCase()),
               onPressed: () {
                 setState(() {
                   _weightsControllers[index].text =
@@ -114,6 +116,8 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
+
     final preferences = ref.watch(preferencesProvider);
     final oneRM = preferences.rmData[_editableWorkout.exerciseName] ?? 0.0;
     final percData = preferences.percData;
@@ -142,7 +146,7 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                 child: ListView(
                   children: [
                     ExpansionTile(
-                      title: const Text('Main Lift'),
+                      title: Text(localizations.mainLift),
                       children: [
                         SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
@@ -151,15 +155,15 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                             columns: [
                               DataColumn(
                                 numeric: false,
-                                tooltip: 'Set',
+                                tooltip: localizations.set,
                                 onSort: (columnIndex, ascending) {},
-                                label: Center(child: Text('Set')),
+                                label: Center(child: Text(localizations.set)),
                               ),
                               DataColumn(
                                 numeric: false,
-                                tooltip: 'Reps',
+                                tooltip: localizations.reps,
                                 onSort: (columnIndex, ascending) {},
-                                label: Center(child: Text('Reps')),
+                                label: Center(child: Text(localizations.reps)),
                               ),
                               DataColumn(
                                 numeric: false,
@@ -186,7 +190,7 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                                         children: [
                                           IconButton(
                                             iconSize: 16.0,
-                                            icon: Icon(Icons.remove),
+                                            icon: const Icon(Icons.remove),
                                             onPressed: () {
                                               setState(() {
                                                 _repsControllers[index].text = (reps > 0 ? reps - 1 : 0).toString();
@@ -196,7 +200,7 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                                           Text('$reps'),
                                           IconButton(
                                             iconSize: 16.0,
-                                            icon: Icon(Icons.add),
+                                            icon: const Icon(Icons.add),
                                             onPressed: () {
                                               setState(() {
                                                 _repsControllers[index].text = (reps + 1).toString();
@@ -212,11 +216,11 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                                         children: [
                                           GestureDetector(
                                             onLongPress: () {
-                                              _showWeightDialog(index, weight);
+                                              _showWeightDialog(index, weight, localizations);
                                             },
                                             child: IconButton(
                                               iconSize: 16.0,
-                                              icon: Icon(Icons.remove),
+                                              icon: const Icon(Icons.remove),
                                               onPressed: () {
                                                 setState(() {
                                                   _weightsControllers[index].text = (weight > 0 ? weight - 1 : 0).toString();
@@ -226,17 +230,17 @@ class _EditWorkoutPageState extends ConsumerState<EditWorkoutPage> {
                                           ),
                                           GestureDetector(
                                             onLongPress: () {
-                                              _showWeightDialog(index, weight);
+                                              _showWeightDialog(index, weight, localizations);
                                             },
                                             child: Text('$weight'),
                                           ),
                                           GestureDetector(
                                             onLongPress: () {
-                                              _showWeightDialog(index, weight);
+                                              _showWeightDialog(index, weight, localizations);
                                             },
                                             child: IconButton(
                                               iconSize: 16.0,
-                                              icon: Icon(Icons.add),
+                                              icon: const Icon(Icons.add),
                                               onPressed: () {
                                                 setState(() {
                                                   _weightsControllers[index].text = (weight + 1).toString();

@@ -8,16 +8,18 @@ class PreferencesAdapter {
       rmData: Map<String, double>.from(map['rmData'] as Map), // Changed to store 1RM values
       percData: (map['percData'] as Map<String, dynamic>).map((key, value) => MapEntry(key, Map<String, double>.from(value as Map))),
       cycleWeekData: (map['cycleWeekData'] as Map<String, dynamic>).map((key, value) => MapEntry(key, Map<String, int>.from(value as Map))), // New field
+      tmData: Map<String, double>.from(map['tmData'] ?? {}), // New field
     );
   }
 
   // Convert PreferencesModel to a Map
-  static Map<String, dynamic> toMap(PreferencesModel preferences) {
+  static Map<String, dynamic> toMap(PreferencesModel model) {
     return {
-      'selectedUnit': preferences.selectedUnit,
-      'rmData': preferences.rmData, // Changed to store 1RM values
-      'percData': preferences.percData,
-      'cycleWeekData': preferences.cycleWeekData, // New field
+      'selectedUnit': model.selectedUnit,
+      'rmData': model.rmData, // Changed to store 1RM values
+      'percData': model.percData,
+      'cycleWeekData': model.cycleWeekData, // New field
+      'tmData': model.tmData, // New field
     };
   }
 }

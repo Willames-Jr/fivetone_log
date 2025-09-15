@@ -22,6 +22,7 @@ class SharedPreferencesRepository implements PreferencesRepository {
 
   @override
   Future<PreferencesModel> insert(PreferencesModel preferences) async {
+    
     final prefs = await SharedPreferences.getInstance();
     final preferencesMap = PreferencesAdapter.toMap(preferences);
     final preferencesString = jsonEncode(preferencesMap);
@@ -30,8 +31,8 @@ class SharedPreferencesRepository implements PreferencesRepository {
   }
 
   @override
-  Future<PreferencesModel> update(PreferencesModel preferences) async {
-    return insert(preferences); // In SharedPreferences, insert and update are the same
+  Future<PreferencesModel> update(PreferencesModel preferences) async {    
+    return insert(preferences);
   }
 
   @override
@@ -49,10 +50,15 @@ class SharedPreferencesRepository implements PreferencesRepository {
         jsonDecode(preferencesString) as Map<String, dynamic>,
       );
       final preferences = PreferencesAdapter.fromMap(preferencesMap);
-      final updatedCycleWeekData = Map<String, Map<String, int>>.from(preferences.cycleWeekData)
-        ..[exercise] = {'cycle': cycle, 'week': week};
+
+      final updatedCycleWeekData = Map<String, Map<String, int>>.from(preferences.cycleWeekData);
+      updatedCycleWeekData[exercise] = {'cycle': cycle, 'week': week};
+
       final updatedPreferences = preferences.copyWith(cycleWeekData: updatedCycleWeekData);
-      await insert(updatedPreferences);
+
+      final preferencesMapToSave = PreferencesAdapter.toMap(updatedPreferences);
+      final preferencesStringToSave = jsonEncode(preferencesMapToSave);
+      await prefs.setString(_preferencesKey, preferencesStringToSave);
     }
   }
 }

@@ -5,6 +5,7 @@ import 'package:fivethreeone_log/app/interactor/providers/preferences_provider.d
 import 'package:fivethreeone_log/app/utils/file_utils.dart'; // Import utility functions for file operations
 import 'package:fivethreeone_log/app/data/adapters/workout_adapter.dart'; // Import WorkoutAdapter
 import 'package:fivethreeone_log/app/data/adapters/preferences_adapter.dart'; // Import PreferencesAdapter
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import localization
 
 class ExportImportPage extends ConsumerWidget {
   const ExportImportPage({super.key});
@@ -13,10 +14,11 @@ class ExportImportPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final workouts = ref.watch(workoutProvider);
     final preferences = ref.watch(preferencesProvider);
+    final localizations = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Export/Import Data'),
+        title: Text(localizations.exportImportData),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -31,10 +33,10 @@ class ExportImportPage extends ConsumerWidget {
                   };
                   final filePath = await FileUtils.exportData(data);
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Data exported successfully to $filePath')),
+                    SnackBar(content: Text('${localizations.dataExportedSuccessfully} $filePath')),
                   );
                 },
-                child: const Text('Export Data'),
+                child: Text(localizations.exportData),
               ),
               const SizedBox(height: 16.0),
               ElevatedButton(
@@ -53,11 +55,11 @@ class ExportImportPage extends ConsumerWidget {
                     await preferencesNotifier.setImportedPreferences(importedPreferences);
           
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Data imported successfully')),
+                      SnackBar(content: Text(localizations.dataImportedSuccessfully)),
                     );
                   }
                 },
-                child: const Text('Import Data'),
+                child: Text(localizations.importData),
               ),
             ],
           ),
